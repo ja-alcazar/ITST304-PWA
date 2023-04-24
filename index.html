@@ -1,125 +1,67 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Snake Game</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-      }
+<head>
+	<meta charset="UTF-8">
+	<title>Guess the Number</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			text-align: center;
+		}
+		h1 {
+			margin-top: 50px;
+		}
+		#guess-input {
+			margin-top: 20px;
+			padding: 10px;
+			font-size: 16px;
+		}
+		#guess-button {
+			margin-top: 20px;
+			padding: 10px;
+			font-size: 16px;
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			cursor: pointer;
+		}
+		#result {
+			margin-top: 20px;
+			font-size: 24px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<h1>Guess the Number</h1>
+	<p>Guess a number between 1 and 100:</p>
+	<input type="text" id="guess-input">
+	<button id="guess-button">Guess</button>
+	<div id="result"></div>
 
-      canvas {
-        display: block;
-        margin: auto;
-        background-color: #333;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="canvas"></canvas>
-    <script>
-      var canvas = document.getElementById("canvas");
-      var ctx = canvas.getContext("2d");
-      var blockSize = 10;
-      var width = canvas.width / blockSize;
-      var height = canvas.height / blockSize;
-      var snake = [{x: 5, y: 5}];
-      var direction = "right";
-      var food = generateFood();
+	<script>
+		// generate a random number between 1 and 100
+		let randomNumber = Math.floor(Math.random() * 100) + 1;
 
-      function generateFood() {
-        return {
-          x: Math.floor(Math.random() * width),
-          y: Math.floor(Math.random() * height)
-        };
-      }
+		// get references to the input, button, and result elements
+		let guessInput = document.getElementById("guess-input");
+		let guessButton = document.getElementById("guess-button");
+		let resultDiv = document.getElementById("result");
 
-      function drawBlock(x, y) {
-        ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-      }
+		// add an event listener to the button
+		guessButton.addEventListener("click", function() {
+			// convert the guess to a number
+			let guess = parseInt(guessInput.value);
 
-      function drawSnake() {
-        ctx.fillStyle = "#fff";
-        snake.forEach(function(block) {
-          drawBlock(block.x, block.y);
-        });
-      }
-
-      function moveSnake() {
-        var head = {x: snake[0].x, y: snake[0].y};
-        switch (direction) {
-          case "right":
-            head.x++;
-            break;
-          case "left":
-            head.x--;
-            break;
-          case "up":
-            head.y--;
-            break;
-          case "down":
-            head.y++;
-            break;
-        }
-        if (head.x === food.x && head.y === food.y) {
-          food = generateFood();
-        } else {
-          snake.pop();
-        }
-        snake.unshift(head);
-      }
-
-      function checkCollision() {
-        if (snake[0].x < 0 || snake[0].x >= width ||
-            snake[0].y < 0 || snake[0].y >= height) {
-          return true;
-        }
-        for (var i = 1; i < snake.length; i++) {
-          if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
-            return true;
-          }
-        }
-        return false;
-      }
-
-      function gameLoop() {
-        if (checkCollision()) {
-          clearInterval(intervalId);
-          alert("Game over!");
-        }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawSnake();
-        drawBlock(food.x, food.y);
-        moveSnake();
-      }
-
-      var intervalId = setInterval(gameLoop, 100);
-
-      document.addEventListener("keydown", function(event) {
-        switch (event.keyCode) {
-          case 37: // Left arrow
-            if (direction !== "right") {
-              direction = "left";
-            }
-            break;
-          case 38: // Up arrow
-            if (direction !== "down") {
-              direction = "up";
-            }
-            break;
-          case 39: // Right arrow
-            if (direction !== "left") {
-              direction = "right";
-            }
-            break;
-          case 40: // Down arrow
-            if (direction !== "up") {
-              direction = "down";
-            }
-            break;
-        }
-      });
-    </script>
-  </body>
+			// check if the guess is correct
+			if (guess === randomNumber) {
+				resultDiv.innerHTML = "You guessed it!";
+			} else if (guess < randomNumber) {
+				resultDiv.innerHTML = "Too low!";
+			} else {
+				resultDiv.innerHTML = "Too high!";
+			}
+		});
+	</script>
+</body>
 </html>
